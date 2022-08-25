@@ -12,12 +12,13 @@ module['exports'] = async function request(url, { method = 'GET', headers = {}, 
       options,
       res => {
         let body = '';
+        let array = [];
         res
-          .on('data', chunk => (body += chunk))
+          .on('data', chunk => {(body += chunk);array.push(...chunk)})
           .on('end', () => resolve({
             json:()=>JSON.parse(body),
             text: ()=>body,
-            buffer: () => Buffer.from(body)
+            buffer: () => Buffer.from(array)
           }))
           .on('error', reject);
       }

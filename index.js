@@ -18,28 +18,29 @@ function HTTP() {
     },
   };
   const server = http.createServer((req, res) => {
-    const [path, params] = req.url.split('?');
+    const [path, query] = req.url.split('?');
     req.path = path;
-    req.params = paramsToObject(params);
+    req.query = queryToObject(query);
+    req.params = {};
     req.on('data', data => (req.body += data));
 
     res.setHeader('Content-Type', 'text/html');
     res.json = data => {
       res.setHeader('Content-Type', 'application/json');
-      if(typeof data != 'string')data=JSON.stringify(data)
+      if (typeof data != 'string') data = JSON.stringify(data);
       res.end(data);
     };
     res.send = data => {
       if (isJson(data)) res.json(data);
-      else res.end(data)
+      else res.end(data);
     };
 
     let URLS = [
-      ...METHODS.USE.filter(([path]) => req.url.startsWith(path)).map(
+      ...METHODS.USE.filter(([path]) => req.path.startsWith(path)).map(
         ([name, fn]) => fn
       ),
       ...METHODS[req.method]
-        .filter(([path]) => path == req.url)
+        .filter(([path]) => validatePath(path, req))
         .map(([name, fn]) => fn),
       function code_404(req, res) {
         res.writeHead(404);
@@ -80,7 +81,21 @@ HTTP.static = require('./static');
 HTTP.Router = require('./router');
 HTTP.db = require('./db');
 
-function paramsToObject(params) {
+function validatePath(path, req) {
+  let arrayPath = path.split('/').filter(p => p);
+  let arrayUrl = req.path.split('/').filter(p => p);
+  let array = arrayUrl
+    .map((value, i) => {
+      let param = arrayPath[i] && arrayPath[i].startsWith(':');
+      if (param) req.params[arrayPath[i].split(':')[1]] = value;
+      return !!(value === arrayPath[i] || param);
+    })
+    .filter(v => !v);
+
+  return array[0] === undefined && arrayPath.length === arrayUrl.length;
+}
+
+function queryToObject(params) {
   params ||= '';
   return Object.fromEntries(params.split('&').map(text => text.split('=')));
 }
