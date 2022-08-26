@@ -5,16 +5,19 @@ module['exports'] = class DB{
   }
   load(){
     try {
-      this.data = fs.readFileSync(__dirname+'/../../../DB.json', 'utf-8')
+      this.data = JSON.parse(fs.readFileSync('./DB.json', 'utf-8'))
     } catch (e) {
       this.data = {}
     }
     this.save()
   }
   save(){
-    fs.writeFileSync(__dirname+'/../../../DB.json', this.data)
+    fs.writeFileSync('./DB.json', JSON.stringify(this.data))
   }
 
+  create(db){
+    this.data[db] ||= []
+  }
   add(db, data){
     data.id=(this.data[db][this.data[db].length-1]||{id:0}).id+1
     this.data[db].push(data)
