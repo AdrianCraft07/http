@@ -1,14 +1,6 @@
-declare function request(
-  url: String,
-  options: {
-    headers: Object;
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE|';
-    body: String;
-  }
-): Promise<{
-  json(): Object;
-  text(): String;
-  buffer(): Buffer;
-}>;
-
-export = request;
+declare const _default: (url: string, { method, headers, body }?: {
+    method?: string | undefined;
+    headers?: {} | undefined;
+    body?: string | undefined;
+}) => Promise<unknown>;
+export = _default;

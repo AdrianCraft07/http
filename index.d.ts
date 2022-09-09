@@ -1,4 +1,12 @@
-import request from './request';
 import DB from './DB';
-
-export { request, DB };
+declare const _default: {
+    request: (url: string, { method, headers, body }?: {
+        method?: string | undefined;
+        headers?: {} | undefined;
+        body?: string | undefined;
+    }) => Promise<unknown>;
+    DB: {
+        new (): DB;
+    };
+};
+export = _default;
