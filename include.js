@@ -2,7 +2,7 @@
 const IS_WEB = !!globalThis.window;
 const globalThisA = globalThis;
 if (!IS_WEB) {
-    globalThis.fetch = globalThis.require('@agacraft/http').request;
+    globalThis.fetch = require('./request');
 }
 if (IS_WEB) {
     globalThisA.include = async function (path) {
