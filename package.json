@@ -1,6 +1,6 @@
 {
   "name": "@agacraft/http",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Web servers maker",
   "main": "index.js",
   "scripts": {
